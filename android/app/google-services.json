@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "300052555739",
+    "project_id": "foodapp-8f232",
+    "storage_bucket": "foodapp-8f232.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:300052555739:android:fa4876de7bd2b4ab8ae9fe",
+        "android_client_info": {
+          "package_name": "com.example.yumfood"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "300052555739-hicnsq1p63gcmcjv45nnhhsu58ukc2g5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.yumfood",
+            "certificate_hash": "fa1ac1185fadbb46af15c39eca0d2e6925b083fe"
+          }
+        },
+        {
+          "client_id": "300052555739-rrgqqjf5qhmh9d1dv931oe9et0og0589.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAa4WqewwLORbqmxsbd9xUHsvnI0Gyj_zQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "300052555739-rrgqqjf5qhmh9d1dv931oe9et0og0589.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
