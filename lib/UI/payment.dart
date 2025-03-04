@@ -1,8 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:nb_utils/nb_utils.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:yumfood/UI/delivery_info.dart';
 import 'package:yumfood/main.dart';
 import 'package:yumfood/resources.dart/images/food_colors.dart';
@@ -21,6 +23,79 @@ class FoodPayment extends StatefulWidget {
 }
 
 class FoodPaymentState extends State<FoodPayment> {
+ late Razorpay _razorpay;
+ String email='';
+ String Mobileno='';
+
+  @override
+  void initState() {
+    super.initState();
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+
+    fetchUserData();
+  }
+Future<void> fetchUserData() async {
+    try {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('User1')
+          .doc('profile')
+          .get();
+
+      if (userDoc.exists) {
+        setState(() {
+          email = userDoc['Email'] ?? "";
+          Mobileno = userDoc['Mobile No'] ?? "";
+        });
+      }
+    } catch (e) {
+      print("Error fetching user data: $e");
+    }
+  }
+  void openCheckout() {
+    var options = {
+      'key': 'YOUR_RAZORPAY_KEY',
+      'amount': (widget.totalAmount*100).toInt(), 
+      'name': 'YumFood',
+      'description': 'Order Payment',
+      'prefill': {
+        'contact': Mobileno,
+        'email': email,
+      },
+      'external': {
+        'wallets': ['paytm']
+      }
+    };
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Payment Successful: ${response.paymentId}")));
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Payment Failed: ${response.message}")));
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("External Wallet Used: ${response.walletName}")));
+  }
+
+  @override
+  void dispose() {
+    _razorpay.clear();
+    super.dispose();
+  }
+  
+  
+
+  
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -49,11 +124,16 @@ class FoodPaymentState extends State<FoodPayment> {
             children: <Widget>[
               Image.asset(food_ic_fab_back, width: width * 0.17, color: appStore.isDarkModeOn ? scaffoldDarkColor : white),
               Container(
-                child: CachedNetworkImage(
-                  placeholder: placeholderWidgetFn() as Widget Function(BuildContext, String)?,
-                  imageUrl: icon,
-                  width: width * 0.08,
-                  fit: BoxFit.contain,
+                
+                child: ElevatedButton(onPressed: (){
+                  openCheckout();
+                },
+                  child: CachedNetworkImage(
+                    placeholder: placeholderWidgetFn() as Widget Function(BuildContext, String)?,
+                    imageUrl: icon,
+                    width: width * 0.08,
+                    fit: BoxFit.contain,
+                  ),
                 ),
               )
             ],
@@ -98,9 +178,12 @@ class FoodPaymentState extends State<FoodPayment> {
                           SizedBox(height: 8),
                           Row(
                             children: <Widget>[
-                              Expanded(flex: 1, child: mPaymentOption(food_google_wallet, food_lbl_google_wallet, '${widget.totalAmount}', food_color_red)),
+                              Expanded(
+                                flex: 1, 
+                                child: mPaymentOption(food_google_wallet, food_lbl_google_wallet, '${widget.totalAmount}', food_color_red)),
                               SizedBox(width: 16),
-                              Expanded(flex: 1, child: mPaymentOption(food_whatsapp, food_lbl_whatsapp_payment, food_lbl_connect, food_textColorPrimary)),
+                              Expanded(flex: 1, 
+                              child: mPaymentOption(food_whatsapp, food_lbl_whatsapp_payment, food_lbl_connect, food_textColorPrimary)),
                             ],
                           ),
                           SizedBox(height: 8),

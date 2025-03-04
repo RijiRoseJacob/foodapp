@@ -1,11 +1,10 @@
-library appStore;
+
 
 import 'package:flutter/material.dart';
 
 import 'package:mobx/mobx.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:yumfood/resources.dart/images/food_colors.dart';
-import 'package:yumfood/resources.dart/images/foodimages.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 

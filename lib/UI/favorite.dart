@@ -88,7 +88,7 @@ class Favourite extends StatelessWidget {
                 Text(model.type, style: primaryTextStyle(color: food_textColorSecondary)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[Text(model.price), Quantitybtn()],
+                  children: <Widget>[Text(model.price)],
                 ),
               ],
             ),
