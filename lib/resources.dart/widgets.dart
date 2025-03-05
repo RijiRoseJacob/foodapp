@@ -51,6 +51,7 @@ Widget mAddress(BuildContext context) {
       if (snapshot.connectionState == ConnectionState.waiting) {
         return Center(child: CircularProgressIndicator());
       }
+      
       if (snapshot.hasError || !snapshot.hasData || !snapshot.data!.exists) {
         return Container(
           padding: EdgeInsets.fromLTRB(16, 10, 16, 10),
@@ -61,7 +62,7 @@ Widget mAddress(BuildContext context) {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text("No Address", style: primaryTextStyle()),
+              Text("Enter your", style: primaryTextStyle()),
               GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => FoodAddAddress()));
@@ -333,3 +334,4 @@ void changeStatusColor(Color color) async {
 Widget? Function(BuildContext, String) placeholderWidgetFn() => (_, s) => placeholderWidget();
 
 Widget placeholderWidget() => Image.asset('assets/Images/grey.jpg', fit: BoxFit.cover);
+

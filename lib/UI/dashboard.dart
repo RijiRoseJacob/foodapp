@@ -8,6 +8,7 @@ import 'package:yumfood/UI/add_address.dart';
 import 'package:yumfood/UI/description.dart';
 import 'package:yumfood/UI/favorite.dart';
 import 'package:yumfood/UI/foodbook_cart.dart';
+import 'package:yumfood/UI/foodbook_details.dart';
 import 'package:yumfood/UI/order.dart';
 import 'package:yumfood/UI/view_restaurent.dart';
 import 'package:yumfood/main.dart';
@@ -113,30 +114,81 @@ class FoodDashboardState extends State<FoodDashboard> {
                           search(context),
                           SizedBox(height: 16),
                           Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: topGradient(
-                                  food_color_blue_gradient1,
-                                  food_color_blue_gradient2,
-                                  food_cloche,
-                                  food_lbl_food_order,
-                                  food_lbl_find_near_by_restaurants,
-                                ),
-                                flex: 1,
-                              ),
-                              SizedBox(width: 10),
-                              Expanded(
-                                child: topGradient(
-                                  food_color_orange_gradient1,
-                                  food_color_orange_gradient2,
-                                  food_ic_table,
-                                  food_lbl_book_a_table,
-                                  food_lbl_may_take_upto_3_mins,
-                                ),
-                                flex: 1,
-                              )
-                            ],
-                          ),
+  children: [
+    Expanded(
+      child: GestureDetector(
+        onTap: () {
+          // Navigate to FoodOrder screen
+          FoodOrder().launch(context);
+        },
+        child: Container(
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [food_color_blue_gradient1, food_color_blue_gradient2],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            boxShadow: defaultBoxShadow(),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SvgPicture.asset(
+                food_cloche,
+                color: food_white,
+                width: MediaQuery.of(context).size.width * 0.06,
+                height: MediaQuery.of(context).size.width * 0.06,
+              ),
+              Text(food_lbl_food_order,
+                  style: primaryTextStyle(color: food_white)),
+              Text("See your order history",
+                  style: primaryTextStyle(color: food_white, size: 12)),
+            ],
+          ),
+        ),
+      ),
+    ),
+    SizedBox(width: 10),
+    Expanded(
+      child: GestureDetector(
+        onTap: () {
+          // Navigate to FoodBookDetail screen (or Book Table screen)
+          FoodBookDetail().launch(context);
+        },
+        child: Container(
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [food_color_orange_gradient1, food_color_orange_gradient2],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            boxShadow: defaultBoxShadow(),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SvgPicture.asset(
+                food_ic_table,
+                color: food_white,
+                width: MediaQuery.of(context).size.width * 0.06,
+                height: MediaQuery.of(context).size.width * 0.06,
+              ),
+              Text(food_lbl_book_a_table,
+                  style: primaryTextStyle(color: food_white)),
+              Text(food_lbl_may_take_upto_3_mins,
+                  style: primaryTextStyle(color: food_white, size: 12)),
+            ],
+          ),
+        ),
+      ),
+    ),
+  ],
+)
+,
                         ],
                       ),
                     ),
@@ -332,10 +384,15 @@ class Item extends StatelessWidget {
                     width: width * 0.4,
                     fit: BoxFit.cover,
                   ),
-                  Container(
-                    alignment: Alignment.topRight,
-                    padding: EdgeInsets.all(4),
-                    child: Icon(Icons.favorite_border, color: food_white, size: 18),
+                  IconButton(
+                    onPressed: () {
+                      addToFavorites(model);
+                    },
+                    icon: Container(
+                      alignment: Alignment.topRight,
+                      padding: EdgeInsets.all(4),
+                      child: Icon(Icons.favorite_border, color: food_white, size: 18),
+                    ),
                   )
                 ],
               ),
@@ -365,6 +422,24 @@ class Item extends StatelessWidget {
     );
   }
 }
+  void addToFavorites(Restaurants model) async {
+    try {
+      await FirebaseFirestore.instance.collection("favorites").add({
+        "name": model.name,
+        "image": model.image,
+
+        "timestamp": FieldValue.serverTimestamp(),
+      });
+      // Show a confirmation
+      ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
+        SnackBar(content: Text("${model.name} added to favorites")),
+      );
+    } catch (e) {
+      print("Error adding to favorites: $e");
+    }
+  }
+
+
 
 // ignore: must_be_immutable
 class Collection extends StatelessWidget {

@@ -18,37 +18,37 @@ List<DashboardCollections> addCollectionData() {
 
 List<Restaurants> addBakeryData() {
   List<Restaurants> bakeryData = [];
-  bakeryData.add(Restaurants("Live Cake & Bakery Shop", 4, food_ic_popular2, "50 Reviews"));
-  bakeryData.add(Restaurants("Richie Rich Cake Shop", 2, food_ic_item12, "50 Reviews"));
-  bakeryData.add(Restaurants("American Dry Fruit Ice Cream", 5, food_ic_item1, "50 Reviews"));
-  bakeryData.add(Restaurants("Cake & Bakery Shop", 4, food_ic_item13, "50 Reviews"));
+  bakeryData.add(Restaurants("Live Cake & Bakery Shop", 4, food_ic_popular2, "50+ Reviews"));
+  bakeryData.add(Restaurants("Richie Rich Cake Shop", 2, food_ic_item12, "50+ Reviews"));
+  bakeryData.add(Restaurants("American Dry Fruit Ice Cream", 5, food_ic_item1, "50+ Reviews"));
+  bakeryData.add(Restaurants("Cake & Bakery Shop", 4, food_ic_item13, "50+ Reviews"));
   return bakeryData;
 }
 
 List<Restaurants> addDeliveryRestaurantsData() {
   List<Restaurants> deliveryRestaurantsData = [];
-  deliveryRestaurantsData.add(Restaurants("American Chinese cuisine", 4, food_ic_popular4, "50 Reviews"));
-  deliveryRestaurantsData.add(Restaurants("Bread", 2, food_ic_popular3, "50 Reviews"));
-  deliveryRestaurantsData.add(Restaurants("Restro Bistro", 5, food_ic_item1, "50 Reviews"));
-  deliveryRestaurantsData.add(Restaurants("Hugs with mugs", 4, food_ic_item6, "50 Reviews"));
+  deliveryRestaurantsData.add(Restaurants("American Chinese cuisine", 4, food_ic_popular4, "50+ Reviews"));
+  deliveryRestaurantsData.add(Restaurants("Bread", 2, food_ic_popular3, "50+ Reviews"));
+  deliveryRestaurantsData.add(Restaurants("Restro Bistro", 5, food_ic_item1, "50+ Reviews"));
+  deliveryRestaurantsData.add(Restaurants("Hugs with mugs", 4, food_ic_item6, "50+ Reviews"));
   return deliveryRestaurantsData;
 }
 
 List<Restaurants> addDineOutRestaurantsData() {
   List<Restaurants> dineOutRestaurantsData = [];
-  dineOutRestaurantsData.add(Restaurants("Raise The Bar \nRooftTop", 4, food_ic_item13, "50 Reviews"));
-  dineOutRestaurantsData.add(Restaurants("Destination Restro & Cafe", 2, food_ic_item14, "50 Reviews"));
-  dineOutRestaurantsData.add(Restaurants("Apple Dine", 5, food_ic_item15, "50 Reviews"));
+  dineOutRestaurantsData.add(Restaurants("Raise The Bar \nRooftTop", 4, food_ic_item13, "50+ Reviews"));
+  dineOutRestaurantsData.add(Restaurants("Destination Restro & Cafe", 2, food_ic_item14, "50+ Reviews"));
+  dineOutRestaurantsData.add(Restaurants("Apple Dine", 5, food_ic_item15, "50+ Reviews"));
 
   return dineOutRestaurantsData;
 }
 
 List<Restaurants> addCafeData() {
   List<Restaurants> cafeData = [];
-  cafeData.add(Restaurants("Domesticated turkey", 4, food_ic_item2, "50 Reviews"));
-  cafeData.add(Restaurants("Germen Chocolate Cake", 2, food_ic_item6, "50 Reviews"));
-  cafeData.add(Restaurants("Tihar", 5, food_ic_item10, "50 Reviews"));
-  cafeData.add(Restaurants("Cafe klatch", 5, food_ic_item1, "50 Reviews"));
+  cafeData.add(Restaurants("Domesticated turkey", 4, food_ic_item2, "50+ Reviews"));
+  cafeData.add(Restaurants("Germen Chocolate Cake", 2, food_ic_item6, "50+ Reviews"));
+  cafeData.add(Restaurants("Tihar", 5, food_ic_item10, "50+ Reviews"));
+  cafeData.add(Restaurants("Cafe klatch", 5, food_ic_item1, "50+ Reviews"));
 
   return cafeData;
 }
@@ -65,9 +65,9 @@ List<DashboardCollections> addCuisineData() {
 
 List<ViewRestaurants> addViewRestaurantsData() {
   List<ViewRestaurants> viewData = [];
-  viewData.add(ViewRestaurants("Domesticated turkey", addViewImagesData(), "4", "50 Reviews", "\$1200 for 2 people", "Sector 19", "7 kms", 1, "your first order & application above 199"));
-  viewData.add(ViewRestaurants("Germen Chocolate Cake", addViewImagesData(), "4", "50 Reviews", "\$1200 for 2 people", "Sector 19", "7 kms", 1, "your first order & application above 199"));
-  viewData.add(ViewRestaurants("Tihar", addViewImagesData(), "4", "50 Reviews", "\$1200 for 2 people", "Sector 19", "7 kms", 1, "your first order & application above 199"));
+  viewData.add(ViewRestaurants("Domesticated turkey", addViewImagesData(), "5", "50 Reviews", "\Rs1200 for 2 people", "Sector 19", "9 kms", 1, "your first order & application above 199"));
+  viewData.add(ViewRestaurants("Germen Chocolate Cake", addViewImagesData(), "3", "50 Reviews", "\Rs1200 for 2 people", "Sector 19", "7 kms", 1, "your first order & application above 199"));
+  viewData.add(ViewRestaurants("Tihar", addViewImagesData(), "4", "50 Reviews", "\Rs1200 for 2 people", "Sector 19", "5 kms", 1, "your first order & application above 199"));
 
   return viewData;
 }
@@ -113,9 +113,9 @@ List<images> addUserPhotosData() {
 //
 List<FoodDish> addFoodDishData() {
   List<FoodDish> dishData = [];
-  dishData.add(FoodDish("American Chinese cuisine", "Italian", "Veg", food_ic_item6, "50"));
-  dishData.add(FoodDish("NonVeg", "Goan", "NonVeg", food_ic_popular2, "50"));
-  dishData.add(FoodDish("Biscuit", "Chines", "Veg", food_ic_popular3, "50"));
+  dishData.add(FoodDish("American Chinese cuisine", "Italian", "Veg", food_ic_item6, "40"));
+  dishData.add(FoodDish("NonVeg", "Goan", "NonVeg", food_ic_popular2, "68"));
+  dishData.add(FoodDish("Biscuit", "Chines", "Veg", food_ic_popular3, "76"));
   dishData.add(FoodDish("Cold Coffee", "Indian", "Veg", food_ic_item10, "50"));
 
   return dishData;
@@ -141,9 +141,9 @@ List<ReviewModel> addReviewData() {
 //
 List<Coupons> addCouponsData() {
   List<Coupons> couponsData = [];
-  couponsData.add(Coupons("Get 40% caseback using HDFC card", "Use code TVBH8932 upto Rs.150 on your first order and Rs. 50 to your second order.", "TVBH8932"));
-  couponsData.add(Coupons("Get 20% caseback using Google wallet", "Use code AB46323 upto 25% on your first order and Rs. 50 to your second order.", "AB46323"));
-  couponsData.add(Coupons("Get 40% caseback using HDFC card", "Use code BGHYJE34 upto Rs.150 on your first order and Rs. 50 to your second order.", "BGHYJE34"));
+  couponsData.add(Coupons("Get 10% caseback on purchase upto Rs.100", "Use code TVBH8932 to apply the offer in your purchase.", "TVBH8932"));
+  couponsData.add(Coupons("Get 20% caseback on purchase from Rs.100 to Rs.300", "Use code AB46323 to apply the offer in your purchase.", "AB46323"));
+  couponsData.add(Coupons("Get 30% caseback on purchase above Rs.300", "Use code BGHYJE34 to apply the offer in your purchase.", "BGHYJE34"));
   return couponsData;
 }
 

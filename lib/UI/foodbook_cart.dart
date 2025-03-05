@@ -5,6 +5,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:yumfood/UI/add_address.dart';
 import 'package:yumfood/UI/coupon.dart';
 import 'package:yumfood/UI/dashboard.dart';
+import 'package:yumfood/UI/delivery_info.dart';
 import 'package:yumfood/UI/payment.dart';
 import 'package:yumfood/UI/view_restaurent.dart';
 import 'package:yumfood/main.dart';
@@ -26,6 +27,7 @@ class FoodBookCartState extends State<FoodBookCart> {
   double couponDiscount = 70.0; // example discount amount
   double gst = 0.0;
   double totalAmount = 0.0;
+  
 
   // User address fields
   String address1 = '';
@@ -37,6 +39,7 @@ void initState() {
   // Instead of orderData(), use the global cart
   cartItems = globalCartItems;
   calculateTotal();
+  fetchUserData();
 }
 
   // Add an item to the cart.
@@ -103,6 +106,9 @@ await FirebaseFirestore.instance.collection("orders").add(orderDetails);
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
+    int _duration = 0;
+
+    
     return Scaffold(
       bottomNavigationBar: SafeArea(
         child: Container(
@@ -115,14 +121,28 @@ await FirebaseFirestore.instance.collection("orders").add(orderDetails);
                   padding: EdgeInsets.all(14),
                   child: Row(
                     children: [
-                      Icon(Icons.location_on, size: 30),
+                     IconButton(
+  onPressed: () async {
+    final returnedDuration = await Navigator.push<int>(
+      context,
+      MaterialPageRoute(builder: (context) => MapSample()),
+    );
+    if (returnedDuration != null) {
+      setState(() {
+        _duration = returnedDuration;
+      });
+    }
+  },
+  icon: Icon(Icons.location_on, size: 30),
+),
+
                       SizedBox(width: 8),
                     
                          Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(address1, style:TextStyle(color: Colors.black,fontSize: 20)),
-                            Text("Delivery Time: 36 min",
+                            Text('$address1', style:TextStyle(color: Colors.black,fontSize: 20)),
+                            Text("Delivery time :$_duration Min",
                                 style: primaryTextStyle(size: 14, color: food_textColorSecondary)),
                             TextButton(
                               onPressed: () {
@@ -214,26 +234,34 @@ await FirebaseFirestore.instance.collection("orders").add(orderDetails);
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Expanded(
-                                child: Text("You saved \$30 on this bill", style: primaryTextStyle()).center(),
+                                child: Text("You can save upto 30% on this bill", style: primaryTextStyle()).center(),
                               ),
                               GestureDetector(
-                                onTap: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => FoodCoupon()));
-                                },
-                                child: Text("Edit with Coupon", style: primaryTextStyle()).center(),
+                          onTap: ()async {
+                          double? discountAmount = await Navigator.push<double>(context,
+                          MaterialPageRoute(builder: (context) => FoodCoupon(totalAmount: totalAmount)),
+                                     );
+                               
+                               if (discountAmount != null) {
+                                      setState(() {
+                                couponDiscount = discountAmount;
+                                   calculateTotal();
+                                          });
+                                          } },
+                                child: Text("check with Coupon", style: primaryTextStyle()).center(),
                               ),
                             ],
                           ),
                         ),
                       ),
-                      SizedBox(height: 8),
+                      SizedBox(height: 20),
                       Padding(
                   padding: EdgeInsets.symmetric(horizontal: 14),
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => FoodDashboard()));
                     },
-                    child: Text("Add More Items"),
+                    child: Text("Add More Items",style: TextStyle(color: Colors.black,fontSize: 20),),
                   ),
                 ),
                 SizedBox(height: 10),

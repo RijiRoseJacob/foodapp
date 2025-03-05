@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
@@ -200,7 +201,9 @@ class FoodBookDetailState extends State<FoodBookDetail> {
                           borderRadius: BorderRadius.circular(50),
                           boxShadow: defaultBoxShadow(),
                         ),
-                        child: Text(food_lbl_book_table, style: primaryTextStyle(color: white)).center(),
+                        child: TextButton(onPressed: ()=>storeBookingDetails(),
+                          
+                          child:Text(food_lbl_book_table, style: primaryTextStyle(color: white)).center(),)
                       ),
                       SizedBox(height: 16),
                     ],
@@ -213,4 +216,44 @@ class FoodBookDetailState extends State<FoodBookDetail> {
       ),
     );
   }
+  Future<void> storeBookingDetails() async {
+  // Build the booking details map.
+  // We use the selected indices to get the actual values from your lists.
+  final bookingDetails = {
+    "people": mPeopleList[mPeople], // e.g., "1", "2", "3", etc.
+    "reservation_date": formatted,  // formatted date string
+    "time": mTimeList[mTime],       // selected time string
+    "food_preference": mFoodList[mFood], // e.g., "Veg" or "Non Veg"
+    "timestamp": FieldValue.serverTimestamp(),
+  };
+
+  try {
+    await FirebaseFirestore.instance.collection("tableBookings").add(bookingDetails);
+    // After storing, show a SnackBar with an OK button.
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("Table booked successfully"),
+        action: SnackBarAction(
+          label: "OK",
+          onPressed: () {
+            // This can dismiss the snack bar, or you could navigate somewhere else.
+          },
+        ),
+      ),
+    );
+  } catch (e) {
+    print("Error storing booking details: $e");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("Error booking table"),
+        action: SnackBarAction(
+          label: "OK",
+          onPressed: () {},
+        ),
+      ),
+    );
+  }
 }
+
+}// for spacing, etc.
+

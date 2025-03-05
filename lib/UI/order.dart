@@ -2,12 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:yumfood/model.dart';
-import 'package:yumfood/resources.dart/data_generator.dart';
+import 'package:yumfood/resources.dart/images/food_colors.dart';
 import 'package:yumfood/resources.dart/strings.dart';
 import 'package:yumfood/resources.dart/widgets.dart';
-
-
 
 class FoodOrder extends StatefulWidget {
   static String tag = '/FoodOrder';
@@ -17,14 +14,6 @@ class FoodOrder extends StatefulWidget {
 }
 
 class FoodOrderState extends State<FoodOrder> {
-  late List<FoodDish> mList2;
-
-  @override
-  void initState() {
-    super.initState();
-    mList2 = orderData();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,20 +22,32 @@ class FoodOrderState extends State<FoodOrder> {
         child: Column(
           children: <Widget>[
             16.height,
-            ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: mList2.length,
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                return Order(mList2[index], index);
-
-              
-                
-              },
+            Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection("orders")
+                    .orderBy("timestamp", descending: true)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  final orders = snapshot.data!.docs;
+                  if (orders.isEmpty) {
+                    return Center(child: Text("No orders found."));
+                  }
+                  return ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    itemCount: orders.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      final data = orders[index].data() as Map<String, dynamic>;
+                      return Order(data, index);
+                    },
+                  );
+                },
+              ),
             ),
-           
-
-            
           ],
         ),
       ),
@@ -54,64 +55,45 @@ class FoodOrderState extends State<FoodOrder> {
   }
 }
 
-// ignore: must_be_immutable
+// Updated Order widget that accepts a Map<String,dynamic> from Firestore.
 class Order extends StatelessWidget {
-  late FoodDish model;
+  final Map<String, dynamic> data;
+  final int pos;
 
-  Order(FoodDish model, int pos) {
-    this.model = model;
-  }
+  Order(this.data, this.pos);
 
   @override
-Widget build(BuildContext context) {
-  return GestureDetector(
-    onTap: () {
-      updateOrder(model);  // Update Firebase when item is tapped
-    },
-    child: Container(
-      margin: EdgeInsets.only(bottom: 16, left: 16, right: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Expanded(
-            child: Row(
-              children: <Widget>[
-                CircleAvatar(
-                  radius: 30,
-                  backgroundImage: CachedNetworkImageProvider(model.image),
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(model.name, style: primaryTextStyle()),
-                      Text(model.price, style: primaryTextStyle()),
-                    ],
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      // You can add an onTap callback here if needed.
+      child: Container(
+        margin: EdgeInsets.only(bottom: 16, left: 16, right: 16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Expanded(
+              child: Row(
+                children: <Widget>[
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundImage: CachedNetworkImageProvider(data['image'] ?? ''),
                   ),
-                )
-              ],
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(data['name'] ?? '', style: primaryTextStyle()),
+                        Text(data['rate'] ?? '', style: primaryTextStyle()),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-  );
-}
-  
-
-void updateOrder(FoodDish model) async {
-  try {
-    await FirebaseFirestore.instance.collection('User1').doc('Order').set({
-      'Dish name': model.name,
-      'Price': model.price,
-      'Dish': model.image,
-      'timestamp': FieldValue.serverTimestamp(),
-    });
-    print("Order Updated Successfully");
-  } catch (e) {
-    print("Error updating order: $e");
+    );
   }
 }
-
-  }

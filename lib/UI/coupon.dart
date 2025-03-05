@@ -7,9 +7,13 @@ import 'package:yumfood/resources.dart/food_theme.dart/dotted_border.dart';
 import 'package:yumfood/resources.dart/images/food_colors.dart';
 import 'package:yumfood/resources.dart/strings.dart';
 import 'package:yumfood/resources.dart/widgets.dart';
+
 class FoodCoupon extends StatefulWidget {
   static String tag = '/FoodCoupon';
-
+  final double totalAmount;
+  
+  FoodCoupon({required this.totalAmount});
+  
   @override
   FoodCouponState createState() => FoodCouponState();
 }
@@ -21,6 +25,13 @@ class FoodCouponState extends State<FoodCoupon> {
   void initState() {
     super.initState();
     mList = addCouponsData();
+  }
+
+  // Determine discount rate based on totalAmount.
+  double getDiscountRate(double amount) {
+    if (amount > 100) return 0.10;
+    else if (amount < 200) return 0.20;
+    else return 0.30;
   }
 
   @override
@@ -71,7 +82,10 @@ class FoodCouponState extends State<FoodCoupon> {
                                 onTap: () {},
                                 child: Container(
                                   padding: EdgeInsets.all(12.0),
-                                  decoration: gradientBoxDecoration(radius: 50, gradientColor1: food_color_blue_gradient1, gradientColor2: food_color_blue_gradient2),
+                                  decoration: gradientBoxDecoration(
+                                      radius: 50,
+                                      gradientColor1: food_color_blue_gradient1,
+                                      gradientColor2: food_color_blue_gradient2),
                                   child: Icon(Icons.arrow_forward, color: food_white),
                                 ),
                               ),
@@ -107,7 +121,16 @@ class FoodCouponState extends State<FoodCoupon> {
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
-                          return Coupon(mList[index], index);
+                          return GestureDetector(
+                            onTap: () {
+                              // When a coupon is tapped, calculate discount based on totalAmount.
+                              double rate = getDiscountRate(widget.totalAmount);
+                              double discountAmount = widget.totalAmount * rate;
+                              // Return the discount amount back to the previous screen.
+                              Navigator.pop(context, discountAmount);
+                            },
+                            child: Coupon(mList[index], index),
+                          );
                         },
                       ),
                     ],
@@ -161,3 +184,5 @@ class Coupon extends StatelessWidget {
     );
   }
 }
+
+

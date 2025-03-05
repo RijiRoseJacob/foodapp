@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:yumfood/model.dart';
@@ -46,9 +47,56 @@ class FoodReviewState extends State<FoodReview> {
             )
           ],
         ),
+        floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          // Navigate to AddReviewScreen (you need to create this)
+          bool? reviewAdded = await Navigator.push(context, MaterialPageRoute(builder: (context) => AddReviewScreen()));
+          if (reviewAdded != null && reviewAdded) {
+            // Re-fetch or update the review list after a new review is added.
+            setState(() {
+              mReviewList = addReviewData(); // or call your method to refresh data
+            });
+          }
+        },
+        child: Icon(Icons.add),
+      ),
+
       ),
     );
   }
+}
+
+class AddReviewScreen extends StatelessWidget {
+
+  TextEditingController reviewController = TextEditingController();
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(appBar: AppBar(title: Text('Add Review')),
+      body: Padding(padding: EdgeInsets.all(0.8),
+      child: Column(
+        children: <Widget>[
+          TextField(
+            controller: reviewController,
+            decoration: InputDecoration(hintText: 'Enter your review'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              await FirebaseFirestore.instance.collection('reviews').add({
+                'review': reviewController.text,
+              });
+              Navigator.pop(context, true);
+            },
+            child: Text('Submit Review'),
+          ),
+        ],
+      ),
+   ));
+    
+  }
+  
+  
+  
+  
 }
 
 // --- Implementation for the missing Review widget ---

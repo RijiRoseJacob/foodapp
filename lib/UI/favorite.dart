@@ -1,12 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:yumfood/model.dart';
-import 'package:yumfood/resources.dart/data_generator.dart';
 import 'package:yumfood/resources.dart/images/food_colors.dart';
 import 'package:yumfood/resources.dart/strings.dart';
 import 'package:yumfood/resources.dart/widgets.dart';
-
 
 class FoodFavourite extends StatefulWidget {
   static String tag = '/FoodFavourite';
@@ -16,39 +15,40 @@ class FoodFavourite extends StatefulWidget {
 }
 
 class FoodFavouriteState extends State<FoodFavourite> {
-  late List<FoodDish> mList1;
-
-  @override
-  void initState() {
-    super.initState();
-    mList1 = addFoodDishData();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar(context, food_lbl_favourite),
       body: SafeArea(
-          child: Column(
-        children: <Widget>[
-          Expanded(
-            child: Container(
-              margin: EdgeInsets.all(16),
-              child: GridView.builder(
-                scrollDirection: Axis.vertical,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, crossAxisSpacing: 16, mainAxisSpacing: 16, childAspectRatio: 0.75),
-                itemCount: mList1.length,
-                itemBuilder: (context, index) {
-                  return Favourite(mList1[index], index);
-                },
+        child: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance.collection("favorites").orderBy("timestamp", descending: true).snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
+            final data = snapshot.data!.docs;
+            return GridView.builder(
+              padding: EdgeInsets.all(16),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                childAspectRatio: 0.75,
               ),
-            ),
-          )
-        ],
-      )),
+              itemCount: data.length,
+              itemBuilder: (context, index) {
+                final itemData = data[index].data() as Map<String, dynamic>;
+                // Create a FoodDish object from the data if needed,
+                // or use itemData directly in your widget.
+                FoodDish favoriteItem = FoodDish.fromMap(itemData);
+                return Favourite(favoriteItem, index);
+              },
+            );
+          },
+        ),
+      ),
     );
   }
 }
+
 
 // ignore: must_be_immutable
 class Favourite extends StatelessWidget {
@@ -96,5 +96,39 @@ class Favourite extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class FoodDish {
+  String name;
+  String image;
+  String type;
+  String price;
+
+  FoodDish({
+    required this.name,
+    required this.image,
+    required this.type,
+    required this.price,
+  });
+
+  // Factory constructor to create a FoodDish from a map
+  factory FoodDish.fromMap(Map<String, dynamic> data) {
+    return FoodDish(
+      name: data['name'] ?? "",
+      image: data['image'] ?? "",
+      type: data['type'] ?? "",
+      price: data['price'] ?? "",
+    );
+  }
+
+  // Convert FoodDish to map (optional, for saving data)
+  Map<String, dynamic> toMap() {
+    return {
+      "name": name,
+      "image": image,
+      "type": type,
+      "price": price,
+    };
   }
 }
